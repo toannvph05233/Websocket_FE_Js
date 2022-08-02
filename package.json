@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@stomp/stompjs": "^6.1.2",
+    "sockjs-client": "^1.6.1"
+  },
+  "devDependencies": {
+    "polymer-cli": "^1.9.11"
+  }
+}
