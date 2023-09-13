@@ -1,39 +1,29 @@
 let stompClient = null;
-connect();
 
 function connect() {
-    let socket = new WebSocket('ws://localhost:8080/gkz-stomp-endpoint/websocket');
+    let nameU = document.getElementById("nameU").value;
+    let socket = new WebSocket('ws://localhost:8080/connect-socket/websocket');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
-        console.log("ok")
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/public', function (message) {
-            console.log("anh ok")
-            showMessage(JSON.parse(message.body).greeting);
-
+        stompClient.subscribe('/topic/'+nameU, function (message) {
+            showMessage(JSON.parse(message.body));
         });
     });
 }
 
-function disconnect() {
-    if (stompClient !== null) {
-        stompClient.disconnect();
-    }
-    console.log("Disconnected");
-}
-
 function sendMessage() {
-    console.log("send ok")
-        stompClient.send("/gkz/hello", {}, JSON.stringify({'message': $("#textMessage").val()}));
-    }
+        let message = document.getElementById("textMessage").value;
+        let nameU = document.getElementById("nameU").value;
+        let nameF = document.getElementById("nameF").value;
+        stompClient.send("/gkz/chat", {},JSON.stringify({nameU,nameF,message}));
+}
 
 
 function showMessage(message) {
-    document.querySelector("#textAreaMessage").innerHTML += `<p>${message}</p>`;
-    $("#textMessage").val("")
+   let str = document.getElementById("textAreaMessage").innerHTML;
+   str += `<p>${message.nameU} - ${message.message}</p>`
+    document.getElementById("textAreaMessage").innerHTML = str;
 
 }
-$(function () {
-connect();
-$("#send" ).click(function(){ sendMessage() });
-});
+
